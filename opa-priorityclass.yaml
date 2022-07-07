@@ -28,6 +28,6 @@ spec:
           namespace := input.review.object.metadata.namespace
           satisfiedclass := [name | input.parameters.allowedclassnames[i] == input.review.object.spec.priorityClassName; name := input.review.object.spec.priorityClassName]
           not count(satisfiedclass) > 0
-          msg := sprintf("The provided priority class  - %v - is not allowed in this namespace -  %v ",[input.review.object.spec.priorityClassName,namespace])
+          msg := sprintf("The provided priority class  - %v - is not allowed in this namespace -  %v - for pod - %v -",[input.review.object.spec.priorityClassName,namespace,pod_name])
         }
 
