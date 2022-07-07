@@ -1,0 +1,33 @@
+apiVersion: templates.gatekeeper.sh/v1
+kind: ConstraintTemplate
+metadata:
+  name: k8srequiredprorityclass
+  annotations:
+    descriptions: >-
+      required By Pods n project ns
+spec:
+  crd:
+    spec:
+      names:
+        kind: k8sRequiredProrityClass
+      validation:
+        openAPIV3Schema:
+          type: object
+          properties:
+            allowedclassnames:
+              type: array
+              descrption: Allowed PriorityClass
+              items:
+                type: string
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      rego: |
+        package k8srequiredprorityclass
+        pod_name = input.review.object.metadata.name
+        violation[{"msg" : msg}] {
+          namespace := input.review.object.metadata.namespace
+          satisfiedclass := [name | input.parameters.allowedclassnames[i] == input.review.object.spec.priorityClassName; name := input.review.object.spec.priorityClassName]
+          not count(satisfiedclass) > 0
+          msg := sprintf("The provided priority class  - %v - is not allowed in this namespace -  %v ",[input.review.object.spec.priorityClassName,namespace])
+        }
+

@@ -1,0 +1,25 @@
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: k8sRequiredProrityClass
+metadata:
+  name: priorityconstrain
+spec:
+  enforcementAction: deny
+  match:
+    kinds:
+      - apiGroups: [""]
+        kinds: ["Pod"]
+    excludedNamespaces:
+      - "team-a"
+      - "service-1"
+      - "gatekeeper-system"
+      - "kube-system"
+      - "hnc-system"
+      - "crossplane-system"
+      - "local-path-storage"
+
+  parameters:
+    allowedclassnames:
+      - "high-prority-1"
+      - "high-prority-2"
+      - "beta"
+    
